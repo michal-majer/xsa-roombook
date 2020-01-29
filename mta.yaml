@@ -23,6 +23,11 @@ modules:
     requires:
       - name: roombook-hdi-container
       - name: roombook-uaa
+
+  - name: ui5
+    type: html5
+    path: ui5
+
 resources:
   - name: roombook-hdi-container
     type: com.sap.xs.hdi-container
