@@ -1,0 +1,38 @@
+ID: roombook
+_schema-version: "2.1"
+version: 0.0.1
+modules:
+  - name: roombook-db
+    type: hdb
+    path: db
+    parameters:
+      memory: 256M
+      disk-quota: 256M
+    requires:
+      - name: roombook-hdi-container
+  - name: roombook-srv
+    type: nodejs
+    path: srv
+    parameters:
+      memory: 512M
+      disk-quota: 256M
+    provides:
+      - name: srv_api
+        properties:
+          url: ${default-url}
+    requires:
+      - name: roombook-hdi-container
+      - name: roombook-uaa
+resources:
+  - name: roombook-hdi-container
+    type: com.sap.xs.hdi-container
+    properties:
+      hdi-container-name: ${service-name}
+  - name: roombook-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: default
+      service: xsuaa
+      config:
+        xsappname: roombook
+        tenant-mode: dedicated
