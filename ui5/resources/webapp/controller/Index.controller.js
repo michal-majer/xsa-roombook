@@ -38,6 +38,7 @@ sap.ui.define([
 			this.getView().setModel(oTimeModel, "timeModel");
 			
 			this._changeCurrentTime();
+			console.log(this.getView().getModel("api"));
 		},
 		
 		_getCurrentTime: function() {
@@ -52,5 +53,7 @@ sap.ui.define([
 				setTimeout(this._changeCurrentTime(), 1000);
 			}, 1000);
 		}
+		
+		
 	});
 });

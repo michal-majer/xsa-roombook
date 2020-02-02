@@ -2,9 +2,24 @@
 	"welcomeFile": "webapp/index.html",
 	"authenticationMethod": "route",
 	"routes": [{
-		"source": "/api(.*)",
+		"source": "/api/(.*)",
 		"destination": "node-backend",
 		"csrfProtection": true,
-		"authenticationType": "xsuaa"
+		"authenticationType": "basic"
+	}, {
+		"source": "/(.*)",
+		"localDir": "resources",
+		"authenticationType": "xsuaa",
+		"cacheControl": "public, max-age=1000,must-revalidate",
+		"replace": {
+			"pathSuffixes": [
+				"index.html"
+			],
+			"services": {
+				"sapui5_sb": {
+					"tag": "ui5"
+				}
+			}
+		}
 	}]
 }

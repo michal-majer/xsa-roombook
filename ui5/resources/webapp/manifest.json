@@ -14,7 +14,16 @@
 			"version": "0.0.0"
 		}
 	},
-
+	"dataSources": {
+		"api": {
+			"uri": "/api/",
+			"type": "OData",
+			"settings": {
+				"odataVersion": "4.0",
+				"localUri": "localService/metadata.xml"
+			}
+		}
+	},
 	"sap.ui": {
 		"fullWidth": false,
 		"technology": "UI5",
@@ -59,6 +68,19 @@
 			"cozy": true
 		},
 		"models": {
+			"api": {
+				"dataSource": "api",
+				"preload": true,
+				"settings": {
+					"autoExpandSelect": true,
+					"earlyRequests": true,
+					"operationMode": "Server",
+					"synchronizationMode": "None",
+					"updateGroupId": "UpdateGroup",
+					"serviceUrl": "/api/"
+				},
+				"type": "sap.ui.model.odata.v4.ODataModel"
+			},
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {

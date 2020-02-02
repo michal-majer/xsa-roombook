@@ -34,6 +34,7 @@ modules:
           url: '~{url}'
           forwardAuthToken: true
       - name: roombook-uaa
+      - name: roombook-ui5
 resources:
   - name: roombook-hdi-container
     type: com.sap.xs.hdi-container
@@ -47,3 +48,8 @@ resources:
       config:
         xsappname: roombook
         tenant-mode: dedicated
+  - name: roombook-ui5
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: sapui5_sb
+      service-plan: sapui5-1.52
