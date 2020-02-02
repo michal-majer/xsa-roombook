@@ -1,6 +1,6 @@
 using roombook from '../db/data-model';
 
-service RoomService {
+service ApiService {
 	@readonly entity Rooms as projection on roombook.Rooms;
 	entity Reservations as projection on roombook.Reservations;
 }

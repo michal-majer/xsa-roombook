@@ -4,18 +4,59 @@
 	<l:ResponsiveSplitter defaultPane="default">
 		<l:PaneContainer>
 			<l:SplitPane>
-				<VBox>
-					<Text text="test" />
-				</VBox>
+				<Page title="Room Thunderbolt" titleLevel="H1">
+					<!--<subHeader>-->
+					<!--	<Toolbar>-->
+					<!--		<Button type="Back"/>-->
+					<!--		<ToolbarSpacer/>-->
+					<!--		<Title text="Toolbar center" level="H3"/>-->
+					<!--		<ToolbarSpacer/>-->
+					<!--	</Toolbar>-->
+					<!--</subHeader>-->
+					<content>
+						<FlexBox height="100%" direction="Column" alignItems="Center" justifyContent="Center" class="timePage">
+							<items>
+								<Text id="currentTime" class="currentTime" text="{timeModel>/currentTime}"/>
+								<GenericTag text="Status" status="Error" class="sapUiSmallMarginBottom">
+									<ObjectNumber state="Error" emphasized="true" number="Zajęte do 15:45"/>
+								</GenericTag>
+								<FlexBox alignItems="Center" justifyContent="Center" wrap="Wrap">
+									<GenericTile class="sapUiTinyMarginBegin sapUiMediumMarginTop tileLayout" header="Daily" subheader="Team SAP" sizeBehavior="Small"
+										press="press">
+										<TileContent footer="15:00 - 16:00">
+											<ImageContent src="sap-icon://sap-logo-shape"/>
+										</TileContent>
+									</GenericTile>
+									<GenericTile class="sapUiTinyMarginBegin sapUiMediumMarginTop tileLayout" header="Daily" subheader="Team Java" sizeBehavior="Small"
+										press="press">
+										<TileContent footer="15:00 - 16:00">
+											<ImageContent src="sap-icon://developer-settings"/>
+										</TileContent>
+									</GenericTile>
+									<GenericTile class="sapUiTinyMarginBegin sapUiMediumMarginTop tileLayout" header="Rekrutacja Java Developer" subheader="HR"
+										sizeBehavior="Small" press="press">
+										<TileContent footer="15:00 - 16:00">
+											<ImageContent src="sap-icon://collaborate"/>
+										</TileContent>
+									</GenericTile>
+									<GenericTile class="sapUiTinyMarginBegin sapUiMediumMarginTop tileLayout" sizeBehavior="Small" press="press">
+										<TileContent footer="Rezerwuj">
+											<ImageContent src="sap-icon://add"/>
+										</TileContent>
+									</GenericTile>
+								</FlexBox>
+							</items>
+						</FlexBox>
+					</content>
+				</Page>
 			</l:SplitPane>
 			<l:SplitPane>
-				<SinglePlanningCalendar id="SPC2" title="Room Thunderbolt" startHour="7" endHour="17" fullDay="false"
-					appointmentSelect="handleAppointmentSelect" headerDateSelect="handleHeaderDateSelect" startDateChange="handleStartDateChange"
-					startDate="{path: '/startDate'}" appointments="{path: '/appointments'}" specialDates="{path: '/specialDates'}"
-					legend="SinglePlanningCalendarLegend" width="50%%">
+				<SinglePlanningCalendar startHour="7" endHour="17" fullDay="false" appointmentSelect="handleAppointmentSelect"
+					headerDateSelect="handleHeaderDateSelect" startDateChange="handleStartDateChange" startDate="{path: '/startDate'}"
+					appointments="{path: '/appointments'}" specialDates="{path: '/specialDates'}" legend="SinglePlanningCalendarLegend">
 					<actions>
-						<ToggleButton text="Full Day" press="toggleFullDay"/>
-						<ToggleButton pressed="{path: 'stateModel>/legendShown'}" icon="sap-icon://legend"/>
+						<!--<ToggleButton text="Full Day" press="toggleFullDay"/>-->
+						<!--<ToggleButton pressed="{path: 'stateModel>/legendShown'}" icon="sap-icon://legend"/>-->
 					</actions>
 					<views>
 						<SinglePlanningCalendarDayView key="DayView" title="Day"/>
@@ -28,7 +69,7 @@
 						<unified:CalendarAppointment title="{title}" text="{text}" type="{type}" icon="{icon}" startDate="{startDate}" endDate="{endDate}"></unified:CalendarAppointment>
 					</appointments>
 				</SinglePlanningCalendar>
-			</l:SplitPane>			
+			</l:SplitPane>
 		</l:PaneContainer>
 	</l:ResponsiveSplitter>
 </mvc:View>

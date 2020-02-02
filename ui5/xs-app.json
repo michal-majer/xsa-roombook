@@ -1,5 +1,10 @@
 {
 	"welcomeFile": "webapp/index.html",
-	"authenticationMethod": "none",
-	"routes": []
+	"authenticationMethod": "route",
+	"routes": [{
+		"source": "/api(.*)",
+		"destination": "node-backend",
+		"csrfProtection": true,
+		"authenticationType": "xsuaa"
+	}]
 }
