@@ -5,14 +5,6 @@
 		<l:PaneContainer>
 			<l:SplitPane>
 				<Page title="Room Thunderbolt" titleLevel="H1">
-					<!--<subHeader>-->
-					<!--	<Toolbar>-->
-					<!--		<Button type="Back"/>-->
-					<!--		<ToolbarSpacer/>-->
-					<!--		<Title text="Toolbar center" level="H3"/>-->
-					<!--		<ToolbarSpacer/>-->
-					<!--	</Toolbar>-->
-					<!--</subHeader>-->
 					<content>
 						<FlexBox height="100%" direction="Column" alignItems="Center" justifyContent="Center" class="timePage">
 							<items>
@@ -20,28 +12,18 @@
 								<GenericTag text="Status" status="Error" class="sapUiSmallMarginBottom">
 									<ObjectNumber state="Error" emphasized="true" number="Zajęte do 15:45"/>
 								</GenericTag>
-								<FlexBox alignItems="Center" justifyContent="Center" wrap="Wrap">
-									<GenericTile class="sapUiTinyMarginBegin sapUiMediumMarginTop tileLayout" header="Daily" subheader="Team SAP" sizeBehavior="Small"
-										press="press">
-										<TileContent footer="15:00 - 16:00">
+								<FlexBox id="todayMettingTiles" alignItems="Center" justifyContent="Center" wrap="Wrap" items="{ path : '/Reservations' }">
+									<GenericTile class="sapUiTinyMarginBegin sapUiMediumMarginTop tileLayout" header="{title}" subheader="{description}" sizeBehavior="Small"
+										press="press" 
+										state="{ parts: [ 
+										{ path: 'startAt', type: 'sap.ui.model.odata.type.DateTimeOffset', formatOptions: { pattern: 'HH:mm:ss' , UTC: true } }, 
+										{ path: 'endAt', type: 'sap.ui.model.odata.type.DateTimeOffset', formatOptions: { pattern: 'HH:mm:ss' , UTC: true } }
+										], 
+										formatter: '.formatter.tileState' }"
+									>
+										<TileContent
+											footer=" { path: 'startAt' , type: 'sap.ui.model.odata.type.DateTimeOffset' , formatOptions: { pattern: 'HH:mm' , UTC: true } } - { path: 'endAt' , type: 'sap.ui.model.odata.type.DateTimeOffset' , formatOptions: { pattern: 'HH:mm' , UTC: true } }">
 											<ImageContent src="sap-icon://sap-logo-shape"/>
-										</TileContent>
-									</GenericTile>
-									<GenericTile class="sapUiTinyMarginBegin sapUiMediumMarginTop tileLayout" header="Daily" subheader="Team Java" sizeBehavior="Small"
-										press="press">
-										<TileContent footer="15:00 - 16:00">
-											<ImageContent src="sap-icon://developer-settings"/>
-										</TileContent>
-									</GenericTile>
-									<GenericTile class="sapUiTinyMarginBegin sapUiMediumMarginTop tileLayout" header="Rekrutacja Java Developer" subheader="HR"
-										sizeBehavior="Small" press="press">
-										<TileContent footer="15:00 - 16:00">
-											<ImageContent src="sap-icon://collaborate"/>
-										</TileContent>
-									</GenericTile>
-									<GenericTile class="sapUiTinyMarginBegin sapUiMediumMarginTop tileLayout" sizeBehavior="Small" press="press">
-										<TileContent footer="Rezerwuj">
-											<ImageContent src="sap-icon://add"/>
 										</TileContent>
 									</GenericTile>
 								</FlexBox>
@@ -52,21 +34,16 @@
 			</l:SplitPane>
 			<l:SplitPane>
 				<SinglePlanningCalendar startHour="7" endHour="17" fullDay="false" appointmentSelect="handleAppointmentSelect"
-					headerDateSelect="handleHeaderDateSelect" startDateChange="handleStartDateChange" startDate="{path: '/startDate'}"
-					appointments="{path: '/appointments'}" specialDates="{path: '/specialDates'}" legend="SinglePlanningCalendarLegend">
-					<actions>
-						<!--<ToggleButton text="Full Day" press="toggleFullDay"/>-->
-						<!--<ToggleButton pressed="{path: 'stateModel>/legendShown'}" icon="sap-icon://legend"/>-->
-					</actions>
+					startDate="{path: 'timeModel>/startDate'}" headerDateSelect="handleHeaderDateSelect" startDateChange="handleStartDateChange"
+					appointments="{path: '/Reservations'}" legend="SinglePlanningCalendarLegend">
+					<actions></actions>
 					<views>
 						<SinglePlanningCalendarDayView key="DayView" title="Day"/>
 						<SinglePlanningCalendarWorkWeekView key="WorkWeekView" title="Work Week"/>
 					</views>
-					<specialDates>
-						<unified:DateTypeRange startDate="{start}" endDate="{end}" type="{type}"/>
-					</specialDates>
+					<specialDates></specialDates>
 					<appointments>
-						<unified:CalendarAppointment title="{title}" text="{text}" type="{type}" icon="{icon}" startDate="{startDate}" endDate="{endDate}"></unified:CalendarAppointment>
+						<unified:CalendarAppointment title="{title}" text="{description}" startDate="{startAt}" endDate="{endAt}"></unified:CalendarAppointment>
 					</appointments>
 				</SinglePlanningCalendar>
 			</l:SplitPane>
