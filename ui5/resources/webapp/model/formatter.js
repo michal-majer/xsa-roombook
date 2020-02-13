@@ -1,6 +1,11 @@
 sap.ui.define([], function () {
 	"use strict";
 	return {
+		roomState: function (model) {
+			console.log(model);
+			return 'Success';
+		},
+
 		tileState: function (startAt, endAt) {
 			const now = new Date();
 
@@ -15,9 +20,15 @@ sap.ui.define([], function () {
 			[hours, minutes, seconds] = endAt.split(':');
 			endAtDate.setHours(+hours);
 			endAtDate.setMinutes(minutes);
-			endAtDate.setSeconds(seconds);		
+			endAtDate.setSeconds(seconds);	
 			
-			return startAtDate >= now && now <= endAtDate ? 'Loaded' : 'Disabled';
+			if ( now < startAtDate ) {
+				return 'Loaded';
+			} else if ( now >= startAtDate && now <= endAtDate ) {
+				return 'Loading';
+			} else {
+				return 'Disabled'
+			}
 		}
 	};
 });

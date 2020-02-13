@@ -9,10 +9,10 @@
 						<FlexBox height="100%" direction="Column" alignItems="Center" justifyContent="Center" class="timePage">
 							<items>
 								<Text id="currentTime" class="currentTime" text="{timeModel>/currentTime}"/>
-								<GenericTag text="Status" status="Error" class="sapUiSmallMarginBottom">
-									<ObjectNumber state="Error" emphasized="true" number="Zajęte do 15:45"/>
+								<GenericTag text="Status" status="{roomModel>/status}" class="sapUiSmallMarginBottom">
+									<ObjectNumber state="{roomModel>/status}" emphasized="true" number="{roomModel>/statusDescription}"/>
 								</GenericTag>
-								<FlexBox id="todayMettingTiles" alignItems="Center" justifyContent="Center" wrap="Wrap" items="{ path : '/Reservations' }">
+								<FlexBox id="todayMettingTiles" alignItems="Center" justifyContent="Center" wrap="Wrap" items="{ path : '/Reservations', events: { change : '.onDataEvents' }}" >
 									<GenericTile class="sapUiTinyMarginBegin sapUiMediumMarginTop tileLayout" header="{title}" subheader="{description}" sizeBehavior="Small"
 										press="press" 
 										state="{ parts: [ 

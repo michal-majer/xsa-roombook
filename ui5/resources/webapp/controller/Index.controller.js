@@ -13,6 +13,7 @@ sap.ui.define([
 		onInit: function () {
 			this._setApiOdata();
 			this._setTimeModel();
+			this._setRoomMode();
 			this._setFilterOnTodayMettingTiles();
 			this._checkForUpdates();
 		},
@@ -42,13 +43,14 @@ sap.ui.define([
 			const oDataEndOfDay = dateTimeOffsetFormater.parseValue(endOfDay, "object");
 
 			const oRoomFilter = new sap.ui.model.Filter("room_ID", "EQ", "f5f96661-bd88-4a8a-866d-750aa865ebd0");
-
 			const oTodayFilter = new sap.ui.model.Filter({
 				path: 'startAt',
 				operator: sap.ui.model.FilterOperator.BT,
 				value1: oDataStartOfDay,
 				value2: oDataEndOfDay
 			});
+
+
 
 			const oFlexBox = this.getView().byId("todayMettingTiles");
 			oFlexBox.getBinding("items").filter([oRoomFilter, oTodayFilter]);
@@ -59,20 +61,23 @@ sap.ui.define([
 
 			oTimeModel.setData({
 				startDate: new Date(),
-				currentTime: this._getCurrentTime(),
-				types: (function () {
-					var aTypes = [];
-					for (var key in CalendarDayType) {
-						aTypes.push({
-							type: CalendarDayType[key]
-						});
-					}
-					return aTypes;
-				})()
+				currentTime: this._getCurrentTime()
 			});
 
 			this.getView().setModel(oTimeModel, "timeModel");
 			this._changeCurrentTime();
+		},
+
+		_setRoomMode: function () {
+			const oRoomModel = new JSONModel();
+
+			oRoomModel.setData({
+				status: 'Success',
+				statusDescription: 'Wolne'
+			});
+
+			this.getView().setModel(oRoomModel, "roomModel");
+
 		},
 
 		_getCurrentTime: function () {
@@ -86,6 +91,30 @@ sap.ui.define([
 				oTimeModel.setProperty("/currentTime", this._getCurrentTime());
 				setTimeout(this._changeCurrentTime(), 1000);
 			}, 1000);
+		},
+
+		onDataEvents: function (oEvent) {
+			const oRoomModel = this.getView().getModel("roomModel");
+			const now = new Date();
+			let status = 'Success';
+			let statusDescription = 'Wolne';
+			
+			const aReservations = oEvent.getSource().getContexts();
+			aReservations.forEach(oReservation => {
+				const { startAt, endAt } = oReservation.getValue();
+				const startAtDate = new Date(startAt);
+				const endAtDate = new Date(endAt);
+
+				const startAtDateUtc = new Date(startAtDate.getTime() + startAtDate.getTimezoneOffset() * 60000);
+				const endAtDateUtc = new Date(endAtDate.getTime() + endAtDate.getTimezoneOffset() * 60000);
+
+				if(startAtDateUtc <= now && endAtDateUtc >= now) {
+					status = 'Error';
+					statusDescription = `Zajęte do ${endAtDateUtc.getHours()}:${endAtDateUtc.getMinutes()}`;
+				}
+			});
+			oRoomModel.setProperty("/status", status);
+			oRoomModel.setProperty("/statusDescription", statusDescription);
 		},
 
 		_checkForUpdates: function () {
