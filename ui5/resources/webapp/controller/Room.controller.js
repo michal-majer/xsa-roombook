@@ -1,34 +1,51 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
+	"sap/ui/core/routing/History",
 	"sap/ui/core/Fragment",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/unified/library",
 	"../model/formatter"
-], function (Controller, Fragment, JSONModel, unifiedLibrary, formatter) {
+], function (Controller, History, Fragment, JSONModel, unifiedLibrary, formatter) {
 	"use strict";
 
-	var CalendarDayType = unifiedLibrary.CalendarDayType;
+	const CalendarDayType = unifiedLibrary.CalendarDayType;
 
-	return Controller.extend("roombook.ui5.controller.Index", {
+	return Controller.extend("roombook.ui5.controller.Room", {
 		formatter: formatter,
 		onInit: function () {
-			this._setApiOdata();
+			this._initRouting();
 			this._setTimeModel();
 			this._setRoomMode();
 			this._setFilterOnTodayMettingTiles();
 			this._checkForUpdates();
 		},
 
-		_setApiOdata: function () {
-			const oApi = new sap.ui.model.odata.v4.ODataModel({
-				groupId: "$direct",
-				synchronizationMode: "None",
-				operationMode: "Server",
-				serviceUrl: "/api/",
-			});
-
-			this.getView().setModel(oApi);
+		_initRouting: function () {
+			const oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+			oRouter.getRoute("RoomView").attachPatternMatched(this._onObjectMatched, this);			
 		},
+
+		_onObjectMatched: function (oEvent) {
+			const sRoomId = oEvent.getParameter("arguments").roomId; 
+			this.getView().bindElement({
+				path: `/Rooms(${sRoomId})`, //?$expand=reservations
+				parameters: {
+					$expand: "reservations"
+				}
+			});
+		},		
+
+		onNavBack: function () {
+			const oHistory = History.getInstance();
+			const sPreviousHash = oHistory.getPreviousHash();
+
+			if (sPreviousHash !== undefined) {
+				window.history.go(-1);
+			} else {
+				const oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+				oRouter.navTo("RoomList", true);
+			}
+		},		
 
 		_setFilterOnTodayMettingTiles: function () {
 			let startOfDay = new Date();
@@ -43,7 +60,6 @@ sap.ui.define([
 			const oDataStartOfDay = dateTimeOffsetFormater.parseValue(startOfDay, "object");
 			const oDataEndOfDay = dateTimeOffsetFormater.parseValue(endOfDay, "object");
 
-			const oRoomFilter = new sap.ui.model.Filter("room_ID", "EQ", "f5f96661-bd88-4a8a-866d-750aa865ebd0");
 			const oTodayFilter = new sap.ui.model.Filter({
 				path: 'startAt',
 				operator: sap.ui.model.FilterOperator.BT,
@@ -51,10 +67,12 @@ sap.ui.define([
 				value2: oDataEndOfDay
 			});
 
-
-
 			const oFlexBox = this.getView().byId("todayMettingTiles");
-			oFlexBox.getBinding("items").filter([oRoomFilter, oTodayFilter]);
+			const oBindingInfo = oFlexBox.getBindingInfo("items");
+			oFlexBox.bindAggregation("items", {
+				...oBindingInfo,
+				filters: [oTodayFilter]
+			});
 		},
 
 		_setTimeModel: function () {
@@ -180,7 +198,7 @@ sap.ui.define([
 			if (Fragment.byId("appointmentDialog", "DTPStartDate").getValueState() !== "Error" && Fragment.byId("appointmentDialog", "DTPEndDate").getValueState() !== "Error") {
 				const oAppointmentsBinding = this.getView().byId("planningCalendar").getBinding("appointments");
 				const oContext = oAppointmentsBinding.create({
-					"room_ID": "f5f96661-bd88-4a8a-866d-750aa865ebd0",
+					"room_ID": this.sRoomId,
 					"title": sTitle,
 					"description": sDescription,
 					"startAt": sODataStartDate,

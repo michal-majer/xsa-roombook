@@ -1,10 +1,10 @@
-<mvc:View controllerName="roombook.ui5.controller.Index" xmlns:mvc="sap.ui.core.mvc" xmlns:html="http://www.w3.org/1999/xhtml"
+<mvc:View controllerName="roombook.ui5.controller.Room" xmlns:mvc="sap.ui.core.mvc" xmlns:html="http://www.w3.org/1999/xhtml"
 	displayBlock="true" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:unified="sap.ui.unified" xmlns:grid="sap.ui.layout.cssgrid" xmlns:f="sap.f"
 	xmlns:core="sap.ui.core" height="100%">
 	<l:ResponsiveSplitter defaultPane="default">
 		<l:PaneContainer>
 			<l:SplitPane>
-				<Page title="Room Thunderbolt" titleLevel="H1">
+				<Page title="Room {name}" titleLevel="H1" showNavButton="true" navButtonPress="onNavBack">
 					<content>
 						<FlexBox height="100%" direction="Column" alignItems="Center" justifyContent="Center" class="timePage">
 							<items>
@@ -12,8 +12,8 @@
 								<GenericTag text="Status" status="{roomModel>/status}" class="sapUiSmallMarginBottom">
 									<ObjectNumber state="{roomModel>/status}" emphasized="true" number="{roomModel>/statusDescription}"/>
 								</GenericTag>
-								<FlexBox id="todayMettingTiles" alignItems="Center" justifyContent="Center" wrap="Wrap" items="{ path : '/Reservations', events: { change : '.onDataEvents' }}" >
-									<GenericTile class="sapUiTinyMarginBegin sapUiMediumMarginTop tileLayout" header="{title}" subheader="{description}" sizeBehavior="Small"
+								<FlexBox id="todayMettingTiles" alignItems="Center" justifyContent="Center" wrap="Wrap" items="{ path : 'reservations', events: { change : '.onDataEvents' }}" >
+									<GenericTile class="sapUiTinyMarginBegin sapUiMediumMarginTop tileLayout" header="{room>title}" subheader="{description}" sizeBehavior="Small"
 										press="press" 
 										state="{ parts: [ 
 										{ path: 'startAt', type: 'sap.ui.model.odata.type.DateTimeOffset', formatOptions: { pattern: 'HH:mm:ss' , UTC: true } }, 
@@ -41,7 +41,7 @@
 			<l:SplitPane>
 				<SinglePlanningCalendar id="planningCalendar" startHour="7" fullDay="false" appointmentSelect="handleAppointmentSelect"
 					startDate="{path: 'timeModel>/startDate'}" headerDateSelect="handleHeaderDateSelect" startDateChange="handleStartDateChange"
-					appointments="{path: '/Reservations'}" legend="SinglePlanningCalendarLegend">
+					appointments="{path: 'reservations'}" legend="SinglePlanningCalendarLegend">
 					<actions></actions>
 					<views>
 						<SinglePlanningCalendarDayView key="DayView" title="Day"/>

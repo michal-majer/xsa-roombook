@@ -48,7 +48,7 @@
 
 	"sap.ui5": {
 		"rootView": {
-			"viewName": "roombook.ui5.view.Index",
+			"viewName": "roombook.ui5.view.App",
 			"type": "XML"
 		},
 		"dependencies": {
@@ -102,17 +102,29 @@
 				"controlAggregation": "pages",
 				"controlId": "idAppControl"
 			},
-			"routes": [{
-				"name": "RouteView1",
-				"pattern": "RouteView1",
-				"target": ["TargetView1"]
+			"routes": [
+			{
+				"name": "RoomList",
+				"pattern": "",
+				"target": "RoomList"
+			},				
+			{
+				"name": "RoomView",
+				"pattern": "room/{roomId}",
+				"target": "RoomView"
 			}],
 			"targets": {
-				"TargetView1": {
+				"RoomList": {
 					"viewType": "XML",
 					"transition": "slide",
 					"clearAggregation": true,
-					"viewName": "View1"
+					"viewName": "RoomList"
+				},
+				"RoomView": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearAggregation": true,
+					"viewName": "Room"
 				}
 			}
 		}
