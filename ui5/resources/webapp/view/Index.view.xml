@@ -30,10 +30,16 @@
 							</items>
 						</FlexBox>
 					</content>
+					<footer>
+						<Toolbar>
+							<ToolbarSpacer/>
+							<Button type="Emphasized"  icon="sap-icon://add" text="Add new appointmen" press="handleAppointmentCreate" />
+						</Toolbar>
+					</footer>					
 				</Page>
 			</l:SplitPane>
 			<l:SplitPane>
-				<SinglePlanningCalendar startHour="7" endHour="17" fullDay="false" appointmentSelect="handleAppointmentSelect"
+				<SinglePlanningCalendar id="planningCalendar" startHour="7" fullDay="false" appointmentSelect="handleAppointmentSelect"
 					startDate="{path: 'timeModel>/startDate'}" headerDateSelect="handleHeaderDateSelect" startDateChange="handleStartDateChange"
 					appointments="{path: '/Reservations'}" legend="SinglePlanningCalendarLegend">
 					<actions></actions>

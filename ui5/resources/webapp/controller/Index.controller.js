@@ -1,9 +1,10 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
+	"sap/ui/core/Fragment",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/unified/library",
 	"../model/formatter"
-], function (Controller, JSONModel, unifiedLibrary, formatter) {
+], function (Controller, Fragment, JSONModel, unifiedLibrary, formatter) {
 	"use strict";
 
 	var CalendarDayType = unifiedLibrary.CalendarDayType;
@@ -117,12 +118,86 @@ sap.ui.define([
 			oRoomModel.setProperty("/statusDescription", statusDescription);
 		},
 
+		_refreshModel: function () {
+			this.getView().getModel().refresh();
+		},		
+
 		_checkForUpdates: function () {
 			setTimeout(() => {
-				this.getView().getModel().refresh();
+				this._refreshModel();
 				setTimeout(this._checkForUpdates(), 60000);
 			}, 60000);
-		}
+		},
 
+
+
+		/* Create Appointment */
+		_arrangeDialogFragment: function (sTitle) {
+			if (!this._oNewAppointmentDialog) {
+				Fragment.load({
+					id: "dialogFrag",
+					name: "sap.m.sample.SinglePlanningCalendarCreateApp.Modify",
+					controller: this
+				})
+				.then(function(oDialog){
+					this._oNewAppointmentDialog = oDialog;
+					this.getView().addDependent(this._oNewAppointmentDialog);
+				}.bind(this));
+			}
+		},
+
+		handleAppointmentCreate: function () {
+			if (!this._oNewAppointmentDialog) {
+				Fragment.load({
+					id: "appointmentDialog",
+					name: "roombook.ui5.view.Modify",
+					controller: this
+				})
+				.then(function(oDialog){
+					this._oNewAppointmentDialog = oDialog;
+					this.getView().addDependent(this._oNewAppointmentDialog);
+					this._oNewAppointmentDialog.open();
+					// this._arrangeDialog(sTitle);
+				}.bind(this));
+			} else {
+				this._oNewAppointmentDialog.open();
+			}
+		},
+
+		handleDialogOkButton: function () {
+		  	const sTitle = Fragment.byId("appointmentDialog", "title").getValue();
+		  	const sDescription = Fragment.byId("appointmentDialog", "description").getValue();
+			const oStartDate = Fragment.byId("appointmentDialog", "DTPStartDate").getDateValue();
+			const oEndDate = Fragment.byId("appointmentDialog", "DTPEndDate").getDateValue();
+
+			const dateTimeOffsetFormater = new sap.ui.model.odata.type.DateTimeOffset({}, {
+				V4: true
+			});
+				
+			const sODataStartDate = dateTimeOffsetFormater.parseValue(oStartDate, "object");
+			const sODataEndDate = dateTimeOffsetFormater.parseValue(oEndDate, "object");				
+
+			if (Fragment.byId("appointmentDialog", "DTPStartDate").getValueState() !== "Error" && Fragment.byId("appointmentDialog", "DTPEndDate").getValueState() !== "Error") {
+				const oAppointmentsBinding = this.getView().byId("planningCalendar").getBinding("appointments");
+				const oContext = oAppointmentsBinding.create({
+					"room_ID": "f5f96661-bd88-4a8a-866d-750aa865ebd0",
+					"title": sTitle,
+					"description": sDescription,
+					"startAt": sODataStartDate,
+					"endAt": sODataEndDate
+				});
+
+					oContext.created().then(() => { 
+						this._refreshModel();
+						this._oNewAppointmentDialog.close();
+					}, function (oError) {
+						// handle rejection of entity creation; if oError.canceled === true then the transient entity has been deleted 
+					});								
+			}
+		},
+
+		handleDialogCancelButton:  function () {
+			this._oNewAppointmentDialog.close();
+		},		
 	});
 });
